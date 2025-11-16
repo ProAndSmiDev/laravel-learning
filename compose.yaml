@@ -1,5 +1,7 @@
+name: laravel-learning
+
 services:
-    laravel.test:
+    ll_app:
         build:
             context: './docker/8.4'
             dockerfile: Dockerfile
@@ -9,7 +11,7 @@ services:
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
-            - '${APP_PORT:-80}:80'
+            - '8080:80'
             - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
         environment:
             WWWUSER: '${WWWUSER}'
@@ -28,7 +30,7 @@ services:
     pgsql:
         image: 'postgres:18-alpine'
         ports:
-            - '${FORWARD_DB_PORT:-5435}:5432'
+            - '5435:5432' # берет порт из переменной, если не находит то стандарт 5435, а 5432 - этой внутренний порт контейнера (изолирован)
         environment:
             PGPASSWORD: '${DB_PASSWORD:-secret}'
             POSTGRES_DB: '${DB_DATABASE}'
