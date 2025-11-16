@@ -2,6 +2,7 @@ name: laravel-learning
 
 services:
     ll_app:
+        container_name: ll_app
         build:
             context: './docker/8.4'
             dockerfile: Dockerfile
@@ -12,7 +13,7 @@ services:
             - 'host.docker.internal:host-gateway'
         ports:
             - '8080:80'
-            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+            - '${VITE_PORT:-5175}:${VITE_PORT:-5173}'
         environment:
             WWWUSER: '${WWWUSER}'
             LARAVEL_SAIL: 1
@@ -24,10 +25,11 @@ services:
         networks:
             - sail
         depends_on:
-            - pgsql
-            - redis
-            - mailpit
-    pgsql:
+            - ll_db
+            - ll_redis
+            - ll_mail
+    ll_db:
+        container_name: ll_db
         image: 'postgres:18-alpine'
         ports:
             - '5435:5432' # берет порт из переменной, если не находит то стандарт 5435, а 5432 - этой внутренний порт контейнера (изолирован)
@@ -52,10 +54,11 @@ services:
                 - '${DB_USERNAME}'
             retries: 3
             timeout: 5s
-    redis:
+    ll_redis:
+        container_name: ll_redis
         image: 'redis:alpine'
         ports:
-            - '${FORWARD_REDIS_PORT:-6379}:6379'
+            - '${FORWARD_REDIS_PORT:-6380}:6379'
         volumes:
             - 'sail-ll-redis:/data'
         networks:
@@ -67,11 +70,12 @@ services:
                 - ping
             retries: 3
             timeout: 5s
-    mailpit:
+    ll_mail:
+        container_name: ll_mail
         image: 'axllent/mailpit:latest'
         ports:
-            - '${FORWARD_MAILPIT_PORT:-1025}:1025'
-            - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
+            - '${FORWARD_MAILPIT_PORT:-1030}:1025'
+            - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8030}:8025'
         networks:
             - sail
 networks:
