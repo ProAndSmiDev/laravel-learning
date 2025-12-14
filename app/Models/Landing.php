@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Landing extends Model
 {
     protected $fillable = ['name', 'is_active', 'category_id'];
+    protected $hidden = ['price'];
+    protected $casts = ['created_at' => 'datetime:d.m.Y H:i:s', 'updated_at' => 'datetime:d.m.Y H:i:s'];
 
     public function category(): BelongsTo
     {
